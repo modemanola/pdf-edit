@@ -58,8 +58,16 @@ export async function redactPdf(
         ann.update();
       }
 
-      // Trajno uklanja tekst/sadržaj unutar redakcionih regiona.
-      page.applyRedactions();
+      // Trajno uklanja sadržaj unutar redakcionih regiona i crta CRNU kutiju preko
+      // (black_boxes=true) da obrisani delovi izgledaju uniformno.
+      // REDACT_IMAGE_PIXELS briše i piksele slika (bitno za skenirane PDF-ove),
+      // ali čuva ostatak slike van regiona.
+      page.applyRedactions(
+        true,
+        mupdf.PDFPage.REDACT_IMAGE_PIXELS,
+        mupdf.PDFPage.REDACT_LINE_ART_REMOVE_IF_COVERED,
+        mupdf.PDFPage.REDACT_TEXT_REMOVE
+      );
     }
 
     const out = doc.saveToBuffer("");
