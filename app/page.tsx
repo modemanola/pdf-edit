@@ -103,7 +103,6 @@ export default function Home() {
   }, []);
 
   const addRegion = useCallback((page: number, rect: PdfRect) => {
-    console.log("[select] dodat region:", { page, rect });
     setSelections((prev) => {
       const next = new Map(prev);
       const id = `region-${++regionCounter.current}`;
@@ -163,9 +162,7 @@ export default function Home() {
     setSuccess(null);
     try {
       const selList = Array.from(selections.values());
-      console.log("[redact] regiona za brisanje:", selList.length, selList);
       const newBuffer = await redactPdf(bufferRef.current, selList);
-      console.log("[redact] novi PDF bajtova:", newBuffer.byteLength);
 
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       const blob = new Blob([newBuffer], { type: "application/pdf" });
