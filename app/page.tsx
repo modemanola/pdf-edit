@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import PageCanvas from "@/components/PageCanvas";
 import { extractTextSpans, openPdf, type PdfDocumentProxy } from "@/lib/pdf";
 import { redactPdf } from "@/lib/redact";
+import { exportPngs } from "@/lib/export";
 import type { PdfRect, Selection, TextSpan } from "@/lib/types";
 
 type Status = "idle" | "loading" | "ready" | "processing" | "error";
@@ -18,6 +19,7 @@ export default function Home() {
   const [selections, setSelections] = useState<Map<string, Selection>>(new Map());
   const [query, setQuery] = useState("");
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
   const [targetWidth, setTargetWidth] = useState(860);
   const [dragging, setDragging] = useState(false);
 
@@ -182,6 +184,37 @@ export default function Home() {
     }
   }, [selections, resultUrl, fileName, loadPdf]);
 
+  const handleExportPng = useCallback(async () => {
+    if (!bufferRef.current || !fileName) return;
+    setExporting(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const pngs = await exportPngs(bufferRef.current, fileName);
+      for (let i = 0; i < pngs.length; i++) {
+        const blob = new Blob([pngs[i].data], { type: "image/png" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = pngs[i].name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        // Kraća pauza da browser ne blokira višestruke download-e.
+        if (i < pngs.length - 1) {
+          await new Promise((r) => setTimeout(r, 400));
+        }
+        URL.revokeObjectURL(url);
+      }
+      setSuccess(`Izvezeno ${pngs.length} PNG ${pngs.length === 1 ? "fajl" : "fajlova"}.`);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setExporting(false);
+    }
+  }, [fileName]);
+
   const pageCount = doc?.numPages ?? 0;
 
   const selectedIds = useMemo(() => {
@@ -244,6 +277,9 @@ export default function Home() {
                 Poništi selekciju ({selections.size})
               </button>
               <button onClick={() => inputRef.current?.click()}>Otvori drugi PDF</button>
+              <button onClick={handleExportPng} disabled={exporting || status === "processing"}>
+                {exporting ? "Izvozim…" : "Izvezi PNG"}
+              </button>
               {resultUrl && (
                 <a className="download" href={resultUrl} download={fileName ?? "redacted.pdf"}>
                   ⬇ Preuzmi izmenjen PDF
