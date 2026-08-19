@@ -11,6 +11,7 @@ type Status = "idle" | "loading" | "ready" | "processing" | "error";
 export default function Home() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [doc, setDoc] = useState<PdfDocumentProxy | null>(null);
   const [spans, setSpans] = useState<TextSpan[]>([]);
@@ -49,6 +50,7 @@ export default function Home() {
   const loadPdf = useCallback(async (buffer: ArrayBuffer, name: string) => {
     setStatus("loading");
     setError(null);
+    setSuccess(null);
     try {
       if (docRef.current) {
         // Mora da se sačeka: pdf.js deli isti worker, a destroy() ga
@@ -101,6 +103,7 @@ export default function Home() {
   }, []);
 
   const addRegion = useCallback((page: number, rect: PdfRect) => {
+    console.log("[select] dodat region:", { page, rect });
     setSelections((prev) => {
       const next = new Map(prev);
       const id = `region-${++regionCounter.current}`;
@@ -150,12 +153,19 @@ export default function Home() {
   }, [matchIds, spanById]);
 
   const handleRemove = useCallback(async () => {
-    if (!bufferRef.current || selections.size === 0) return;
+    if (!bufferRef.current) return;
+    if (selections.size === 0) {
+      setError("Prvo označi tekst (klikom) ili region (prevlačenjem miša po dokumentu).");
+      return;
+    }
     setStatus("processing");
     setError(null);
+    setSuccess(null);
     try {
       const selList = Array.from(selections.values());
+      console.log("[redact] regiona za brisanje:", selList.length, selList);
       const newBuffer = await redactPdf(bufferRef.current, selList);
+      console.log("[redact] novi PDF bajtova:", newBuffer.byteLength);
 
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       const blob = new Blob([newBuffer], { type: "application/pdf" });
@@ -167,6 +177,7 @@ export default function Home() {
         ? `${fileName.replace(/\.pdf$/i, "")}-izmenjeno.pdf`
         : "izmenjeno.pdf";
       await loadPdf(newBuffer.slice(0), nextName);
+      setSuccess(`Uklonjeno ${selList.length} ${selList.length === 1 ? "region" : "regiona"} — izmenjen PDF je spreman za preuzimanje.`);
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : String(err));
@@ -225,17 +236,17 @@ export default function Home() {
             </div>
 
             <div className="toolbar__actions">
-              <button onClick={() => inputRef.current?.click()}>Otvori drugi PDF</button>
-              <button onClick={clearSelections} disabled={!selections.size}>
-                Obriši selekciju ({selections.size})
-              </button>
               <button
                 className="primary"
                 onClick={handleRemove}
-                disabled={!selections.size || status === "processing"}
+                disabled={status === "processing"}
               >
-                {status === "processing" ? "Brišem…" : "Ukloni označeni tekst"}
+                {status === "processing" ? "Brišem…" : "Ukloni označeno iz PDF-a"}
               </button>
+              <button onClick={clearSelections} disabled={!selections.size}>
+                Poništi selekciju ({selections.size})
+              </button>
+              <button onClick={() => inputRef.current?.click()}>Otvori drugi PDF</button>
               {resultUrl && (
                 <a className="download" href={resultUrl} download={fileName ?? "redacted.pdf"}>
                   ⬇ Preuzmi izmenjen PDF
@@ -247,6 +258,7 @@ export default function Home() {
       </header>
 
       {error && <div className="notice notice--error">{error}</div>}
+      {success && <div className="notice notice--success">{success}</div>}
 
       {!doc ? (
         <div

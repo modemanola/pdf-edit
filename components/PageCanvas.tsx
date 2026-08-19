@@ -50,14 +50,6 @@ export default function PageCanvas({
   const marqueeRef = useRef<Marquee | null>(null);
   const scaleRef = useRef(1);
 
-  useEffect(() => {
-    marqueeRef.current = marquee;
-  }, [marquee]);
-
-  useEffect(() => {
-    scaleRef.current = scale;
-  }, [scale]);
-
   // Lazy render: canvas se iscrtava tek kad stranica uđe blizu viewport-a.
   useEffect(() => {
     const el = wrapRef.current;
@@ -128,6 +120,7 @@ export default function PageCanvas({
       }).promise;
 
       if (!cancelled) {
+        scaleRef.current = s;
         setViewport(vp);
         setScale(s);
       }
@@ -140,6 +133,11 @@ export default function PageCanvas({
 
   // ---- Marquee (selekcija regiona prevlačenjem) ----
 
+  const clearMarquee = useCallback(() => {
+    marqueeRef.current = null;
+    setMarquee(null);
+  }, []);
+
   const handlePointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
     if ((e.target as HTMLElement).closest("[data-span], [data-region]")) return;
@@ -147,28 +145,33 @@ export default function PageCanvas({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     e.currentTarget.setPointerCapture(e.pointerId);
-    setMarquee({ x0: x, y0: y, x1: x, y1: y });
+    const m = { x0: x, y0: y, x1: x, y1: y };
+    marqueeRef.current = m; // sinhrono, da move/up odmah vide vrednost
+    setMarquee(m);
   }, []);
 
   const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
     const m = marqueeRef.current;
     if (!m) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    setMarquee({ ...m, x1: e.clientX - rect.left, y1: e.clientY - rect.top });
+    const next = { ...m, x1: e.clientX - rect.left, y1: e.clientY - rect.top };
+    marqueeRef.current = next;
+    setMarquee(next);
   }, []);
 
   const handlePointerUp = useCallback(
     () => {
       const m = marqueeRef.current;
-      if (!m) {
-        setMarquee(null);
-        return;
-      }
+      // Bitno: čisti i ref i state, inače kasniji pointermove ponovo
+      // "oživi" selekciju nakon puštanja miša.
+      marqueeRef.current = null;
+      setMarquee(null);
+      if (!m) return;
+
       const x0 = Math.min(m.x0, m.x1);
       const y0 = Math.min(m.y0, m.y1);
       const x1 = Math.max(m.x0, m.x1);
       const y1 = Math.max(m.y0, m.y1);
-      setMarquee(null);
 
       if (x1 - x0 < 4 || y1 - y0 < 4) return; // preslab "klik", ne selekcija
 
@@ -217,6 +220,8 @@ export default function PageCanvas({
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onPointerCancel={clearMarquee}
+          onLostPointerCapture={clearMarquee}
         >
           {spans.map((span) => {
             const r = toScreen(span.rect);
