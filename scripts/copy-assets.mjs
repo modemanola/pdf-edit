@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 lin <nemjov95@gmail.com>
+// Copyright (C) 2026 lin
 
 // Kopira statičke resurse iz node_modules u public/,
 // kako bi se MuPDF WASM i pdf.js worker servirali direktno

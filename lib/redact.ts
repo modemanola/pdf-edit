@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 lin <nemjov95@gmail.com>
+// Copyright (C) 2026 lin
 
 // Pravo uklanjanje teksta pomoću MuPDF-a (WebAssembly).
 // MuPDF se učitava dinamički sa statičke lokacije (/public/mupdf),

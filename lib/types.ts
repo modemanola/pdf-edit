@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 lin <nemjov95@gmail.com>
+// Copyright (C) 2026 lin
 
 // Koordinatni sistem rect-ova (PdfRect) kroz celu aplikaciju:
 //   MuPDF "page space" — origin gore-levo, Y na dole, rotacija primenjena, u PDF points.

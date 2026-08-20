@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 lin <nemjov95@gmail.com>
+// Copyright (C) 2026 lin
 
 // Izvoz PDF stranica u PNG (jedan PNG po stranici), 100% klijentski.
 import { loadMupdf } from "./redact";
