@@ -34,12 +34,16 @@ vercel        # ili poveži GitHub repo na vercel.com
 ```
 
 - Nema potrebe za `vercel.json` — Vercel automatski detektuje Next.js.
-- `npm run build` (sa `prebuild`) kopira WASM fajlove u `public/`.
-- Build je čisto statički (nema serverless funkcija).
+- `npm run build` (sa `prebuild`) kopira WASM fajlove u `public/` i generiše statički
+  export u `out/` (`output: "export"` u `next.config.ts`) — **bez serverless funkcija**.
+- **AGPL §13:** javni deploy znači da se aplikacija servira preko mreže, pa moraš
+  korisnicima ponuditi izvorni kod (link u footer-u i ovaj repo). Za ličnu/privatnu
+  upotrebu bez toga — vidi sekciju Napomene.
 
 ## Napomene
 
-- **Licenca:** MuPDF je [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html). Za ličnu/hobi upotrebu na free Vercel-u je OK, ali treba da ponudiš izvorni kod korisnicima (npr. link na ovaj repo). Za zatvorenu/komercijalnu upotrebu potrebna je komercijalna licenca od Artifex-a.
+- **Licenca:** Ovaj projekat je licenciran pod [AGPL-3.0-or-later](./LICENSE) (zbog MuPDF-a, koji je sam AGPL). Izvorni kod je javno dostupan na [github.com/modemanola/pdf-edit](https://github.com/modemanola/pdf-edit), a aplikacija tu vezu ističe i u svom footer-u (AGPL §13). Za zatvorenu/komercijalnu upotrebu bez obaveze objavljivanja koda potrebna je [komercijalna licenca od Artifex-a](https://artifex.com/contact/mupdf-js).
+- Spisak svih biblioteka i njihovih licenci je u [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md).
 - WASM je ~10 MB (ili ~3.6 MB uz brotli). Učitava se samo kada korisnik klikne „Ukloni označeni tekst".
 - Skenirani PDF-ovi (bez tekstualnog sloja) nemaju tekst za selekciju — za njih bi bio potreban OCR.
 

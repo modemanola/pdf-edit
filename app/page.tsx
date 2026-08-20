@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 lin <nemjov95@gmail.com>
+
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -362,6 +365,36 @@ export default function Home() {
           e.target.value = "";
         }}
       />
+
+      <footer className="license-notice">
+        <p>
+          Ovaj softver je slobodan softver licenciran pod{" "}
+          <a
+            href="https://www.gnu.org/licenses/agpl-3.0.html"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GNU Affero General Public License v3 (ili novijom)
+          </a>
+          .{" "}
+          <a
+            href="https://github.com/modemanola/pdf-edit"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Izvorni kod
+          </a>{" "}
+          je javno dostupan. Pokreće ga{" "}
+          <a href="https://mupdf.com" target="_blank" rel="noreferrer">
+            MuPDF (AGPL)
+          </a>{" "}
+          i{" "}
+          <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noreferrer">
+            PDF.js (Apache-2.0)
+          </a>
+          .
+        </p>
+      </footer>
     </div>
   );
 }

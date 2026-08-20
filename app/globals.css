@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later
+   Copyright (C) 2026 lin <nemjov95@gmail.com> */
+
 :root {
   --bg: #0f1115;
   --bg-panel: #171a21;
@@ -299,4 +302,28 @@ a.download:hover {
   background: var(--marquee);
   border: 2px dashed var(--accent);
   pointer-events: none;
+}
+
+/* ---- Licenca (AGPL §13) ---- */
+
+.license-notice {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-panel);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.license-notice p {
+  margin: 0;
+}
+
+.license-notice a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.license-notice a:hover {
+  text-decoration: underline;
 }

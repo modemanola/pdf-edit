@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 lin <nemjov95@gmail.com>
+
 // Interakcija sa pdf.js (prikaz + izvlačenje pozicija teksta).
 // pdf.js se učitava dinamički (lazy) da ne ulazi u inicijalni bundle.
 //
