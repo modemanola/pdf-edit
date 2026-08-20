@@ -376,7 +376,9 @@ export default function Home() {
           >
             GNU Affero General Public License v3 (ili novijom)
           </a>
-          .{" "}
+          .
+        </p>
+        <p>
           <a
             href="https://github.com/modemanola/pdf-edit"
             target="_blank"
@@ -384,7 +386,10 @@ export default function Home() {
           >
             Izvorni kod
           </a>{" "}
-          je javno dostupan. Pokreće ga{" "}
+          je javno dostupan.
+        </p>
+        <p>
+          Pokreće ga{" "}
           <a href="https://mupdf.com" target="_blank" rel="noreferrer">
             MuPDF (AGPL)
           </a>{" "}
@@ -393,6 +398,10 @@ export default function Home() {
             PDF.js (Apache-2.0)
           </a>
           .
+        </p>
+        <p>
+          Kontakt:{" "}
+          <a href="mailto:samolagano73@gmail.com">samolagano73@gmail.com</a>
         </p>
       </footer>
     </div>

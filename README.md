@@ -56,3 +56,7 @@ lib/            # pdf.ts (pdf.js), redact.ts (MuPDF), types.ts
 public/mupdf/   # MuPDF WASM (kopiran iz node_modules)
 scripts/        # copy-assets.mjs (postinstall/prebuild)
 ```
+
+## Kontakt
+
+- **Mejl:** [samolagano73@gmail.com](mailto:samolagano73@gmail.com)

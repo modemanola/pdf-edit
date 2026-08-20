@@ -313,6 +313,9 @@ a.download:hover {
   text-align: center;
   font-size: 13px;
   color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .license-notice p {
