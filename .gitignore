@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# test/uzorak PDF fajlovi i Windows artefakti
+sample.pdf
+*Zone.Identifier
+
 # debug
 npm-debug.log*
 yarn-debug.log*
